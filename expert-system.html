@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЭС «Digital-консультант» - Avaio Media</title>
+<style>
+  :root{
+    --bg:#f4f6fa; --card:#ffffff; --ink:#1c2333; --muted:#5b6478;
+    --accent:#2f6fed; --accent2:#1d4fb8; --ok:#1e9e6a; --line:#e3e8f2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Segoe UI', Arial, sans-serif; background:var(--bg); color:var(--ink); line-height:1.5;}
+  header{background:linear-gradient(120deg,#1d3461,#2f6fed); color:#fff; padding:28px 24px;}
+  header h1{font-size:22px; font-weight:600;}
+  header p{opacity:.85; font-size:14px; margin-top:6px; max-width:820px;}
+  main{max-width:960px; margin:0 auto; padding:24px 16px 60px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; margin-bottom:20px; box-shadow:0 1px 3px rgba(20,40,90,.06);}
+  .card h2{font-size:16px; margin-bottom:14px; color:var(--accent2);}
+  .q{margin-bottom:16px;}
+  .q label.title{display:block; font-weight:600; font-size:14px; margin-bottom:6px;}
+  select{width:100%; padding:9px 10px; border:1px solid #c8d2e4; border-radius:8px; font-size:14px; background:#fbfcff;}
+  .btns{display:flex; gap:10px; margin-top:6px;}
+  button{border:0; border-radius:8px; padding:11px 22px; font-size:15px; cursor:pointer;}
+  #run{background:var(--accent); color:#fff; font-weight:600;}
+  #run:hover{background:var(--accent2);}
+  #reset{background:#e8edf6; color:var(--ink);}
+  .rec{border-left:4px solid var(--ok); background:#f2fbf7; border-radius:8px; padding:12px 14px; margin-bottom:10px;}
+  .rec b{display:block; font-size:15px;}
+  .rec span{font-size:13px; color:var(--muted);}
+  .cf{float:right; font-size:12px; background:#dff3ea; color:#177a52; padding:2px 8px; border-radius:10px;}
+  .trace{font-size:13px;}
+  .trace li{margin:0 0 10px 18px;}
+  .trace .rule{font-family:Consolas,monospace; background:#eef2fa; padding:1px 6px; border-radius:5px; color:var(--accent2); font-size:12px;}
+  .hidden{display:none;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:0 24px;}
+  @media(max-width:680px){.grid{grid-template-columns:1fr;}}
+  footer{ text-align:center; color:var(--muted); font-size:12px; padding:10px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Экспертная система «Digital-консультант»</h1>
+  <p>Прототип экспертной системы для ООО «АВАЙО» (digital-агентство Avaio Media, г.&nbsp;Воронеж).
+     Система подбирает тип веб-сайта и стратегию продвижения для клиента на основе продукционной
+     базы знаний и механизма прямого логического вывода (forward chaining).</p>
+</header>
+<main>
+
+<div class="card">
+  <h2>1. Ввод исходных данных о клиенте</h2>
+  <div class="grid">
+    <div class="q">
+      <label class="title">Сфера деятельности клиента</label>
+      <select id="sphere">
+        <option value="retail">Розничная торговля / товары</option>
+        <option value="services">Услуги (B2C)</option>
+        <option value="b2b">B2B / производство</option>
+        <option value="horeca">Кафе, ресторан, HoReCa</option>
+        <option value="startup">Стартап / новый бренд</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Главная цель клиента</label>
+      <select id="goal">
+        <option value="sales">Онлайн-продажи товаров</option>
+        <option value="leads">Заявки и звонки (лиды)</option>
+        <option value="image">Имидж и узнаваемость бренда</option>
+        <option value="info">Информирование клиентов</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Ассортимент товаров / услуг</label>
+      <select id="catalog">
+        <option value="one">Одна услуга или один продукт</option>
+        <option value="few">Несколько направлений (до 10)</option>
+        <option value="many">Большой каталог (50+ позиций)</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Текущий сайт клиента</label>
+      <select id="site">
+        <option value="none">Сайта нет</option>
+        <option value="old">Есть, но устаревший</option>
+        <option value="modern">Есть современный сайт</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Бюджет на разработку</label>
+      <select id="devbudget">
+        <option value="low">До 100 тыс. руб.</option>
+        <option value="mid">100-400 тыс. руб.</option>
+        <option value="high">Более 400 тыс. руб.</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Бюджет на продвижение (в месяц)</label>
+      <select id="adbudget">
+        <option value="low">До 30 тыс. руб.</option>
+        <option value="mid">30-100 тыс. руб.</option>
+        <option value="high">Более 100 тыс. руб.</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">Когда нужен результат</label>
+      <select id="urgency">
+        <option value="fast">Как можно быстрее (1-2 мес.)</option>
+        <option value="normal">Готовы работать на перспективу (3-6 мес.)</option>
+      </select>
+    </div>
+    <div class="q">
+      <label class="title">География продаж</label>
+      <select id="geo">
+        <option value="city">Один город</option>
+        <option value="region">Регион / несколько областей</option>
+        <option value="country">Вся Россия</option>
+      </select>
+    </div>
+  </div>
+  <div class="btns">
+    <button id="run" onclick="consult()">Получить рекомендацию</button>
+    <button id="reset" onclick="location.reload()">Сбросить</button>
+  </div>
+</div>
+
+<div class="card hidden" id="resultCard">
+  <h2>2. Заключение экспертной системы</h2>
+  <div id="recs"></div>
+</div>
+
+<div class="card hidden" id="traceCard">
+  <h2>3. Объяснение вывода (сработавшие правила)</h2>
+  <ol class="trace" id="trace"></ol>
+</div>
+
+</main>
+<footer>Прототип ЭС · продукционная модель знаний · механизм прямого вывода · ООО «АВАЙО», производственная практика</footer>
+
+<script>
+/* ============================================================
+   БАЗА ЗНАНИЙ
+   Продукционная модель: ЕСЛИ <условия> ТО <новый факт>, CF
+   Факты хранятся в рабочей памяти (объект wm).
+   ============================================================ */
+const RULES = [
+  // --- Правила выбора типа сайта -------------------------------
+  {id:"R1",  if:{goal:"sales", catalog:"many"},              then:{siteType:"shop"},      cf:0.95,
+   text:"ЕСЛИ цель = онлайн-продажи И каталог большой, ТО тип сайта - интернет-магазин"},
+  {id:"R2",  if:{goal:"sales", catalog:"few"},               then:{siteType:"shop-lite"}, cf:0.85,
+   text:"ЕСЛИ цель = онлайн-продажи И направлений немного, ТО тип сайта - сайт-каталог с корзиной"},
+  {id:"R3",  if:{goal:"sales", catalog:"one"},               then:{siteType:"landing"},   cf:0.9,
+   text:"ЕСЛИ цель = онлайн-продажи И продукт один, ТО тип сайта - продающий лендинг"},
+  {id:"R4",  if:{goal:"leads", catalog:"one"},               then:{siteType:"landing"},   cf:0.9,
+   text:"ЕСЛИ цель = лиды И услуга одна, ТО тип сайта - лендинг с формой заявки"},
+  {id:"R5",  if:{goal:"leads", catalog:"few"},               then:{siteType:"corporate"}, cf:0.85,
+   text:"ЕСЛИ цель = лиды И несколько направлений, ТО тип сайта - корпоративный сайт"},
+  {id:"R6",  if:{goal:"image"},                              then:{siteType:"corporate"}, cf:0.8,
+   text:"ЕСЛИ цель = имидж, ТО тип сайта - корпоративный / промо-сайт"},
+  {id:"R7",  if:{goal:"info"},                               then:{siteType:"corporate"}, cf:0.75,
+   text:"ЕСЛИ цель = информирование, ТО тип сайта - корпоративный сайт-визитка"},
+  {id:"R8",  if:{sphere:"horeca", goal:"leads"},             then:{extra:"menu-booking"}, cf:0.8,
+   text:"ЕСЛИ сфера = HoReCa И цель = лиды, ТО добавить онлайн-меню и модуль бронирования"},
+
+  // --- Правила о состоянии текущего сайта ----------------------
+  {id:"R9",  if:{site:"none"},                               then:{needDev:"full"},       cf:1.0,
+   text:"ЕСЛИ сайта нет, ТО требуется разработка сайта «с нуля»"},
+  {id:"R10", if:{site:"old"},                                then:{needDev:"redesign"},   cf:0.9,
+   text:"ЕСЛИ сайт устаревший, ТО перед запуском рекламы требуется редизайн"},
+  {id:"R11", if:{site:"modern"},                             then:{needDev:"none"},       cf:0.9,
+   text:"ЕСЛИ сайт современный, ТО можно сразу переходить к продвижению"},
+
+  // --- Правила бюджета разработки ------------------------------
+  {id:"R12", if:{siteType:"shop", devbudget:"low"},          then:{devNote:"cms"},        cf:0.85,
+   text:"ЕСЛИ нужен интернет-магазин И бюджет разработки низкий, ТО использовать готовую CMS-платформу вместо индивидуальной разработки"},
+  {id:"R13", if:{siteType:"shop", devbudget:"high"},         then:{devNote:"custom"},     cf:0.85,
+   text:"ЕСЛИ нужен интернет-магазин И бюджет разработки высокий, ТО рекомендуется индивидуальная разработка (Ruby on Rails)"},
+
+  // --- Правила выбора канала продвижения -----------------------
+  {id:"R14", if:{urgency:"fast"},                            then:{channel:"context"},    cf:0.9,
+   text:"ЕСЛИ результат нужен быстро, ТО основной канал - контекстная реклама (Яндекс Директ)"},
+  {id:"R15", if:{urgency:"normal", adbudget:"low"},          then:{channel:"seo"},        cf:0.85,
+   text:"ЕСЛИ клиент готов ждать И рекламный бюджет низкий, ТО основной канал - SEO-продвижение"},
+  {id:"R16", if:{urgency:"normal", adbudget:"mid"},          then:{channel:"seo+context"},cf:0.8,
+   text:"ЕСЛИ клиент готов ждать И бюджет средний, ТО SEO + поддерживающая контекстная реклама"},
+  {id:"R17", if:{adbudget:"high"},                           then:{channel:"complex"},    cf:0.85,
+   text:"ЕСЛИ рекламный бюджет высокий, ТО комплексное продвижение: контекст + SEO + медийная реклама"},
+  {id:"R18", if:{channel:"context", geo:"city"},             then:{geoNote:"local"},      cf:0.9,
+   text:"ЕСЛИ канал = контекстная реклама И география = один город, ТО настроить геотаргетинг на город для экономии бюджета"},
+  {id:"R19", if:{channel:"seo", geo:"country"},              then:{geoNote:"fedseo"},     cf:0.8,
+   text:"ЕСЛИ канал = SEO И география = вся Россия, ТО потребуется расширенное семантическое ядро и региональные поддомены"},
+
+  // --- Правила фирменного стиля --------------------------------
+  {id:"R20", if:{sphere:"startup"},                          then:{branding:"yes"},       cf:0.85,
+   text:"ЕСЛИ клиент - стартап/новый бренд, ТО рекомендуется разработка логотипа и фирменного стиля"},
+  {id:"R21", if:{goal:"image", site:"none"},                 then:{branding:"yes"},       cf:0.8,
+   text:"ЕСЛИ цель = имидж И сайта ещё нет, ТО начать с разработки фирменного стиля"}
+];
+
+/* Каталог формулировок итоговых рекомендаций */
+const CONCLUSIONS = {
+  siteType:{
+    "shop":      ["Интернет-магазин", "Полноценный интернет-магазин с каталогом, корзиной и онлайн-оплатой."],
+    "shop-lite": ["Сайт-каталог с корзиной", "Каталог продукции с возможностью заказа - быстрее и дешевле полного магазина."],
+    "landing":   ["Продающий лендинг", "Одностраничный сайт, сфокусированный на одном продукте и конверсии посетителя в заявку."],
+    "corporate": ["Корпоративный сайт", "Многостраничный сайт с описанием направлений, портфолио и формами обратной связи."]
+  },
+  channel:{
+    "context":    ["Контекстная реклама", "Запуск Яндекс Директ - даёт трафик с первых дней работы."],
+    "seo":        ["SEO-продвижение", "Поисковая оптимизация: результат через 3-6 месяцев, но дешёвый долгосрочный трафик."],
+    "seo+context":["SEO + контекстная реклама", "SEO как основа, контекстная реклама поддерживает продажи на старте."],
+    "complex":    ["Комплексное продвижение", "Контекстная, медийная реклама и SEO одновременно - максимальный охват."]
+  },
+  needDev:{
+    "full":     ["Разработка сайта с нуля", "У клиента нет сайта - первым этапом идёт проектирование и разработка."],
+    "redesign": ["Редизайн текущего сайта", "Запускать рекламу на устаревший сайт неэффективно - сначала модернизация."],
+    "none":     ["Сайт готов к продвижению", "Существующий сайт пригоден, разработка не требуется."]
+  },
+  devNote:{
+    "cms":    ["Готовая CMS-платформа", "При ограниченном бюджете магазин разворачивается на готовой CMS."],
+    "custom": ["Индивидуальная разработка", "Бюджет позволяет заказную разработку (Ruby on Rails) под процессы клиента."]
+  },
+  geoNote:{
+    "local":  ["Геотаргетинг на город", "Показ рекламы только жителям города клиента - экономия рекламного бюджета."],
+    "fedseo": ["Федеральное SEO", "Расширенное семантическое ядро и региональные версии сайта."]
+  },
+  branding:{
+    "yes": ["Фирменный стиль и логотип", "Перед запуском сайта и рекламы бренду нужна визуальная айдентика."]
+  },
+  extra:{
+    "menu-booking": ["Онлайн-меню и бронирование", "Для заведения HoReCa на сайт добавляются меню и форма бронирования столиков."]
+  }
+};
+
+/* ============================================================
+   МЕХАНИЗМ ЛОГИЧЕСКОГО ВЫВОДА (прямой вывод, forward chaining)
+   Циклически просматривает правила; правило срабатывает, если
+   все его условия есть в рабочей памяти, и добавляет новый факт.
+   Работа завершается, когда ни одно правило не может сработать.
+   ============================================================ */
+function infer(wm){
+  const fired = [];
+  let changed = true;
+  while(changed){
+    changed = false;
+    for(const r of RULES){
+      if(fired.some(f => f.id === r.id)) continue;              // правило уже сработало
+      const ok = Object.entries(r.if).every(([k,v]) => wm[k] === v);
+      if(!ok) continue;
+      for(const [k,v] of Object.entries(r.then)){
+        if(wm[k] === undefined){ wm[k] = v; wm["_cf_"+k] = r.cf; }
+      }
+      fired.push(r);
+      changed = true;
+    }
+  }
+  return fired;
+}
+
+function consult(){
+  // рабочая память: исходные факты из анкеты
+  const wm = {
+    sphere:   val("sphere"),   goal:    val("goal"),
+    catalog:  val("catalog"),  site:    val("site"),
+    devbudget:val("devbudget"),adbudget:val("adbudget"),
+    urgency:  val("urgency"),  geo:     val("geo")
+  };
+  const fired = infer(wm);
+
+  // вывод рекомендаций
+  const recs = document.getElementById("recs");
+  recs.innerHTML = "";
+  const order = ["needDev","siteType","devNote","extra","branding","channel","geoNote"];
+  for(const key of order){
+    const v = wm[key];
+    if(v && CONCLUSIONS[key] && CONCLUSIONS[key][v]){
+      const [title, descr] = CONCLUSIONS[key][v];
+      const cf = Math.round((wm["_cf_"+key]||0)*100);
+      recs.insertAdjacentHTML("beforeend",
+        `<div class="rec"><span class="cf">уверенность ${cf}%</span><b>${title}</b><span>${descr}</span></div>`);
+    }
+  }
+  if(!recs.innerHTML) recs.innerHTML = "<p>Недостаточно данных для формирования рекомендации.</p>";
+
+  // объяснение вывода
+  const trace = document.getElementById("trace");
+  trace.innerHTML = fired.map(r =>
+    `<li><span class="rule">${r.id}</span> ${r.text} <i>(CF = ${r.cf})</i></li>`).join("");
+
+  document.getElementById("resultCard").classList.remove("hidden");
+  document.getElementById("traceCard").classList.remove("hidden");
+  document.getElementById("resultCard").scrollIntoView({behavior:"smooth"});
+}
+
+const val = id => document.getElementById(id).value;
+</script>
+</body>
+</html>
